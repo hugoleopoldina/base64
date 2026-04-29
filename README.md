@@ -15,6 +15,11 @@ As principais operações de deslocamento são ```>> (right shift)``` e ```<< (l
 | :---: | :---: | :---: | :---: | :---: |
 | A | 0100 0001 | >> | 2 | 0001 0000 |
 
-O que aconteceu? Simples, 2 bits foram movidos para a direita e 2 bits (0s) foram adicionados à esquerda
+Dois bits foram movidos para a direita, descartando os 2 bits menos significativos. Dois bits 0 foram inseridos à esquerda. O resultado continua sendo um byte de 8 bits, mas agora apenas os 6 bits mais significativos originais foram mantidos.
+
+```
+01000001 -> 00010000
+      ^^            ^^
+```
 
 # Operações bitwise
