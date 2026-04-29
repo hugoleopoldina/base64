@@ -9,20 +9,25 @@ O algoritmo base64 converte dados binarios (textos, imagens ou arquivos) em sequ
 ABC -> QUJD
 ```
 
+Perceba que o valor final aumentou 1 byte, isso diz os 33% no tamanho final.
+
+Bem, Como dito, o algoritmo converte blocos de 3 bytes em 4 caracteres de 6 bits, ou seja, ele não vai operar bytes individualmente, cada byte vai compartilhar seus bits entre si.
+
 ## Entrada
 | A | B | C |
 | :---: | :---: | :---: |
 | 01000001 | 01000010 | 01000011 |
 
-## Saída
-| Q | U | J | D |
-| :---: | :---: | :---: | :---: |
-| 01010001 | 01010101 | 01001010 | 01000100 |
+A primeira coisa que faremos é dividir este bloco de 8 bits em bloco de 6 bits:
 
-Perceba que o valor final aumentou 1 byte, isso diz os 33% no tamanho final.
+| 16 | 20 | 9 | 3 |
+| :---: | :---: | :---: | :---: |
+| 010000 | 010100 | 001001 | 000011 |
+
+O resultado foi 4 numeros que serão usados em uma lista de caracteres:
 
 # Deslocamento de bits
-As principais operações de deslocamento são ```>> (right shift)``` e ```<< (left shift)```, eles movem digitos binários para esquerda ou para direita. Por que deslocamento de bits? Como dito, o algoritmo converte blocos de 3 bytes em 4 caracteres de 6 bits, ou seja, ele não vai operar bytes individualmente, cada byte vai compartilhar seus bits entre si. Exemplo:
+As principais operações de deslocamento são ```>> (right shift)``` e ```<< (left shift)```, eles movem digitos binários para esquerda ou para direita. Por que deslocamento de bits?
 
 | Caractere | Binário | Operador | Operando | Resultado |
 | :---: | :---: | :---: | :---: | :---: |
