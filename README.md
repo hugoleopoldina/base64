@@ -64,10 +64,10 @@ Se pegarmos os caracteres correspondente aos indices, temos:
 Resultado: ```QUJD```
 
 OK! Mas como vou implementar esse algoritmo em c?
-Simples! Deslocando bits e combinando-os com operações bitwise
+Simples, deslocando bits e combinando-os com operações bitwise
 
-# Deslocamento de bits
-As principais operações de deslocamento são ```>> (right shift)``` e ```<< (left shift)```, eles movem digitos binários para esquerda ou para direita. Exemplo:
+# Deslocando bits
+As operações `>>` (right shift) e `<<` (left shift) movem bits para direita ou esquerda.. Exemplo:
 
 | Caractere | Binário | Operador | Operando | Resultado |
 | :---: | :---: | :---: | :---: | :---: |
@@ -80,6 +80,59 @@ Dois bits foram movidos para a direita, descartando os 2 bits menos significativ
       ^^    ^^      ^^
 ```
 
-Mas veja, isso ja codifica o primeiro byte para base64, o valor binário resultante da operação ```A >> 2``` é ```00010000``` convertido para inteiro ```16```, 
+Isso ja codifica o primeiro byte para base64, o valor binário resultante da operação ```A >> 2``` é ```00010000``` convertido para inteiro ```16``` na tabela base64 ```Q``` só que 2 bits ```01``` foram descartados e eles são necessários para concatenar com 4 bits mais significativos do segundo byte ```B``` resultando no segundo grupo de 6 bits:
 
-# Operações bitwise
+### 1º grupo
+Seis primeiros bits do byte A (descartando 2 bits)
+
+```
+A = 010000|01|
+01000001 >> 2 = 00010000 (01 descartados)
+```
+
+### 2º grupo
+Dois bits descartados do byte A + 4 primeiros bits do byte B (descartando 4 bits)
+
+```
+B =  0100|0010|
+01 + 0100 = 010100 (0010 descartados)
+```
+
+### 3º grupo
+Quatro bits descartados do byte B + 2 primeiros bits do byte C (descartando 6 bits)
+
+```
+C = 01|000011|
+0010 + 01 = 001001 (000011 descartados)
+```
+
+### 4º grupo
+Seis bits descartados do byte C
+
+```
+000011 (novo indice da tabela base64)
+```
+
+# Obtendo bits específicos
+Para obter bits especificos do byte ```A``` por exemplo, precisamos utilizar a **operação bitwise AND (&)** que fará uma comparação bit a bit de um número com outro, o bit resultante é ```1``` se ambos os bits correspondentes forem ```1```, caso contrário, é ```0```. Exemplo:
+
+```
+A = 01000001
+A & 00000011
+    00000001
+```
+
+Usamos ```00000011``` para obter 2 ultimos bits do byte ```A```, o resultado foi ```00000001``` porque o único bit que corresponde a ```1``` entre os dois números é o ultimo bit, para obter os 4 ultimos bits usamos ```00001111```:
+
+```
+C = 01000011
+C & 00001111
+    00000011
+```
+
+# Concatenando bits
+Para concatenar os bits vamos utilizar **operação bitwise OR (|)** combinado com **deslocamento de bits** abordado [anteriormente](#deslocando-bits), primeiro precisamos saber quanto de bits vamos concatenar, 
+
+
+```
+```
