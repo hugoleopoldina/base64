@@ -131,8 +131,24 @@ C & 00001111
 ```
 
 # Concatenando bits
-Para concatenar os bits vamos utilizar **operação bitwise OR (|)** combinado com **deslocamento de bits** abordado [anteriormente](#deslocando-bits), primeiro precisamos saber quanto de bits vamos concatenar, 
+Para concatenar os bits vamos utilizar **operação bitwise OR (|)** combinado com **deslocamento de bits** abordado [anteriormente](#deslocando-bits), primeiro precisamos saber quanto de bits vamos concatenar, deslocar os bits necessário e combina-los:
+
+| A | B | C |
+| :---: | :---: | :---: |
+| 01000001 | 01000010 | 01000011 |
+
+| 16 | 20 | 9 | 3 |
+| :---: | :---: | :---: | :---: |
+| 010000 | 010100 | 001001 | 000011 |
+
+### 1° grupo
+Basta ```A >> 2``` resultado ```010000```
+
+### 2° grupo
+Dois ultimos bits do byte ```A``` concatendos com os 4 primeiros bits do byte ```B```
+```
+A & 00000011 = 01
+      B >> 4 = 0100
+```
 
 
-```
-```
