@@ -143,7 +143,7 @@ Para concatenar os bits vamos utilizar **operação bitwise OR (|)** combinado c
 
 ### 1° grupo
 
-Basta ```A >> 2``` resultado ```010000```
+Basta deslocar dois bits para direita ```A >> 2``` resultado ```010000```
 
 ### 2° grupo
 Dois ultimos bits do byte ```A``` concatendos com os 4 primeiros bits do byte ```B```
@@ -162,10 +162,10 @@ Pegue os 2 ultimos bits do byte ```A``` e abra espaço para 4 bits, deslocando p
 Em seguida use a operação ```OR (|)``` para juntar os 4 primeiros bits do byte ```B```
 
 ```
-010000 | (B >> 4) = 010100
+010000 | 0100 = 010100
 ```
 
-O resultado juntand os cálculos fica:
+O resultado juntando os cálculos ficaria:
 
 ```
 ((A & 3) << 4) | (B >> 4 ) = 010100
