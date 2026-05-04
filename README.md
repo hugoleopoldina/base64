@@ -56,10 +56,13 @@ O resultado foi 4 numeros, cada um representando um índice na tabela Base64:
 | ... | ... |
 
 Se pegarmos os caracteres correspondente aos indices, temos:
-- 16: ```Q```
-- 20: ```U```
-- 9: ```J```
-- 3: ```D```
+
+| Caractere | Índice |
+| :---: | :---: |
+| Q | 16 |
+| U | 20 |
+| J | 9 |
+| D | 3 |
 
 Resultado: ```QUJD```
 
@@ -86,7 +89,7 @@ Isso ja codifica o primeiro byte para base64, o valor binário resultante da ope
 Seis primeiros bits do byte ```A``` (descartando 2 bits)
 
 ```
-A = 010000|01|
+A = |010000|01|
 01000001 >> 2 = 00010000 (01 descartados)
 ```
 
@@ -94,7 +97,7 @@ A = 010000|01|
 Dois bits descartados do byte ```A``` + 4 primeiros bits do byte ```B``` (descartando 4 bits)
 
 ```
-B =  0100|0010|
+B = |0100|0010|
 01 + 0100 = 010100 (0010 descartados)
 ```
 
@@ -102,7 +105,7 @@ B =  0100|0010|
 Quatro bits descartados do byte ```B``` + 2 primeiros bits do byte ```C``` (descartando 6 bits)
 
 ```
-C = 01|000011|
+C = |01|000011|
 0010 + 01 = 001001 (000011 descartados)
 ```
 
