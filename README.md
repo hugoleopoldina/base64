@@ -83,7 +83,7 @@ Dois bits foram movidos para a direita, descartando os 2 bits menos significativ
 Isso ja codifica o primeiro byte para base64, o valor binário resultante da operação ```A >> 2``` é ```00010000``` convertido para inteiro ```16``` na tabela base64 ```Q``` só que 2 bits ```01``` foram descartados e eles são necessários para concatenar com 4 bits mais significativos do segundo byte ```B``` resultando no segundo grupo de 6 bits:
 
 ### 1º grupo
-Seis primeiros bits do byte A (descartando 2 bits)
+Seis primeiros bits do byte ```A``` (descartando 2 bits)
 
 ```
 A = 010000|01|
@@ -91,7 +91,7 @@ A = 010000|01|
 ```
 
 ### 2º grupo
-Dois bits descartados do byte A + 4 primeiros bits do byte B (descartando 4 bits)
+Dois bits descartados do byte ```A``` + 4 primeiros bits do byte ```B``` (descartando 4 bits)
 
 ```
 B =  0100|0010|
@@ -99,7 +99,7 @@ B =  0100|0010|
 ```
 
 ### 3º grupo
-Quatro bits descartados do byte B + 2 primeiros bits do byte C (descartando 6 bits)
+Quatro bits descartados do byte ```B``` + 2 primeiros bits do byte ```C``` (descartando 6 bits)
 
 ```
 C = 01|000011|
@@ -107,7 +107,7 @@ C = 01|000011|
 ```
 
 ### 4º grupo
-Seis bits descartados do byte C
+Seis bits descartados do byte ```C```
 
 ```
 000011 (novo indice da tabela base64)
@@ -168,5 +168,21 @@ Em seguida use a operação ```OR (|)``` para juntar os 4 primeiros bits do byte
 O resultado juntando os cálculos ficaria:
 
 ```
-((A & 3) << 4) | (B >> 4 ) = 010100
+((A & 00000011) << 4) | (B >> 4 ) = 010100
 ```
+
+### 3º grupo
+Quatro ultimos bits do byte ```B``` concatenados com 2 primeiros bits do byte ```C```
+
+```
+((B & 00001111) << 2) | (C >> 6) = 001001
+```
+
+### 4º grupo
+Seis ultimos bits do byte ```C```
+
+```
+C & 00111111 = 000011
+```
+
+Essa é a lógica que utilizei para codificar dados para base64 em C
