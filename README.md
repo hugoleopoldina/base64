@@ -142,6 +142,7 @@ Para concatenar os bits vamos utilizar **operação bitwise OR (|)** combinado c
 | 010000 | 010100 | 001001 | 000011 |
 
 ### 1° grupo
+
 Basta ```A >> 2``` resultado ```010000```
 
 ### 2° grupo
@@ -152,8 +153,20 @@ A & 00000011 = 01
       B >> 4 = 0100
 ```
 
-Agora basta concatenar esses dois bits
+Pegue os 2 ultimos bits do byte ```A``` e abra espaço para 4 bits, deslocando para esquerda:
 
 ```
 01 << 4 = 010000
+```
+
+Em seguida use a operação ```OR (|)``` para juntar os 4 primeiros bits do byte ```B```
+
+```
+010000 | (B >> 4) = 010100
+```
+
+O resultado juntand os cálculos fica:
+
+```
+((A & 3) << 4) | (B >> 4 ) = 010100
 ```
