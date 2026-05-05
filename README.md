@@ -2,16 +2,15 @@
 Este é um projeto que eu criei para entender o algoritmo do base64 e criar funções para codificar e decodificar dados à serem transmitidos em redes e armazena-los em banco de dados usando a linguagem C.
 
 # Como funciona
-O algoritmo base64 converte dados binarios (textos, imagens ou arquivos) em sequencia de bytes legiveis ```A-Z, a-z, 0-9, +, /``` e ```=``` para preenchimento (padding). Ele tranforma blocos de 3 bytes ```(3 x 8 = 24 bits)``` em 4 caracteres de 6 bits  ```(4 x 6 = 24 bits)```, isso faz com que o tamanho original aumente 33%. Exemplo:
+O algoritmo base64 converte dados binarios (textos, imagens ou arquivos) em sequência de caracteres ASCII legíveis ```A-Z, a-z, 0-9, +, /``` e ```=``` para preenchimento (padding). Ele tranforma blocos de 3 bytes ```(3 x 8 = 24 bits)``` em 4 caracteres de 6 bits  ```(4 x 6 = 24 bits)```, isso faz com que o tamanho original aumente 33%. Exemplo:
 
 
 ```
 ABC -> QUJD
 ```
 
-Perceba que o valor final aumentou 1 byte, isso diz os 33% no tamanho final. Como dito, o algoritmo converte blocos de 3 bytes em 4 caracteres de 6 bits, ou seja, ele não vai operar bytes individualmente, cada byte vai combinar seus bits entre si.
+Perceba que o valor final aumentou 1 byte, isso diz os 33% no tamanho final. O algoritmo não vai operar bytes individualmente, os bytes são processados em blocos de 3, combinando seus bits entre si.
 
-## Entrada
 | A | B | C |
 | :---: | :---: | :---: |
 | 01000001 | 01000010 | 01000011 |
@@ -65,6 +64,35 @@ Se pegarmos os caracteres correspondente aos indices, temos:
 | D | 3 |
 
 Resultado: ```QUJD```
+
+# Como calcular o tamanho final?
+Primeiro dividimos o tamanho total da entrada em blocos de 3:
+
+```
+        Entrada: ABC
+Total de blocos: 3 / 3 = 1
+```
+
+Tivemos o resultado de 1 bloco de ```24 bits```, a cada ```24 bits``` o algoritmo gera ```4 caracteres``` da tabela base64, então temos o seguinte calculo:
+
+```
+      Entrada: ABC
+Tamanho final: 3 / 3 * 4 = 4
+```
+
+Feito! O tamanho final é de ```4 bytes``` mas tem um porém, e se o tamanho de entrada não for ```múltiplo de 3```? Aí a divisão dos blocos quebram e temos que arredondar o tamanho final para ```múltiplo de 4```. Exemplo:
+
+```
+      Entrada: ABCD
+Tamanho final: 4 / 3 * 4 = 5.33333333
+```
+
+O múltiplo de 4 mais próximo é o ```8```, faremos o arredondamento para cima do tamanho final quebrado ```5.33333333```
+
+```
+      Entrada: ABCD
+Tamanho final: ceil(4 / 3 * 4) = 6
+```
 
 OK! Mas como vou implementar esse algoritmo em c?
 Simples, deslocando bits e combinando-os com operações bitwise
