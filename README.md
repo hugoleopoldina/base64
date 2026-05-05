@@ -1,27 +1,36 @@
 # base64-algorithm
-Este é um projeto que eu criei para entender o algoritmo do base64 e criar funções para codificar e decodificar dados à serem transmitidos em redes e armazena-los em banco de dados usando a linguagem C.
+Este projeto foi criado para estudar o funcionamento do algoritmo Base64 e implementar funções de codificação e decodificação em linguagem C. O objetivo é entender como dados podem ser transformados para transmissão em redes ou armazenamento em sistemas que aceitam apenas caracteres ASCII.
 
 # Como funciona
-O algoritmo base64 converte dados binarios (textos, imagens ou arquivos) em sequência de caracteres ASCII legíveis ```A-Z, a-z, 0-9, +, /``` e ```=``` para preenchimento (padding). Ele tranforma blocos de 3 bytes ```(3 x 8 = 24 bits)``` em 4 caracteres de 6 bits  ```(4 x 6 = 24 bits)```, isso faz com que o tamanho original aumente 33%. Exemplo:
+O Base64 converte dados binários (textos, imagens ou arquivos) em uma sequência de caracteres ASCII legíveis:
 
+```
+A-Z, a-z, 0-9, +, /
+```
 
+O caractere ```=``` é utilizado como **padding** (preenchimento).
+
+O algoritmo transforma blocos de **3 bytes (3 × 8 = 24 bits)** em 4 caracteres, onde cada caractere representa **6 bits (4 × 6 = 24 bits)**. Isso resulta em um aumento de aproximadamente **33% no tamanho dos dados**.
+
+Exemplo:
 ```
 ABC -> QUJD
 ```
 
-Perceba que o valor final aumentou 1 byte, isso diz os 33% no tamanho final. O algoritmo não vai operar bytes individualmente, os bytes são processados em blocos de 3, combinando seus bits entre si.
+O algoritmo não processa bytes individualmente, mas sim em blocos de 3 bytes, combinando seus bits.
 
+# Transformação passo a passo
 | A | B | C |
 | :---: | :---: | :---: |
 | 01000001 | 01000010 | 01000011 |
 
-Os três bytes (24 bits) são concatenados formando um fluxo contínuo de bits. Esse fluxo é então dividido sequencialmente em quatro grupos de 6 bits:
+Os 3 bytes são concatenados formando um fluxo contínuo de 24 bits. Esse fluxo é então dividido sequencialmente em 4 grupos de 6 bits:
 
 | 16 | 20 | 9 | 3 |
 | :---: | :---: | :---: | :---: |
 | 010000 | 010100 | 001001 | 000011 |
 
-O resultado foi 4 numeros, cada um representando um índice na tabela Base64:
+Cada valor representa um índice na tabela Base64:
 
 - A-Z: ```0-25```
 - a-z: ```26-51```
@@ -29,32 +38,7 @@ O resultado foi 4 numeros, cada um representando um índice na tabela Base64:
 -   +: ```62```
 -   /: ```63```
 
-| Caractere | Índice |
-| :---: | :---: |
-| A | 0 |
-| B | 1 |
-| C | 2 |
-| D | 3 |
-| E | 4 |
-| F | 5 |
-| G | 6 |
-| H | 7 |
-| I | 8 |
-| J | 9 |
-| K | 10 |
-| L | 11 |
-| M | 12 |
-| N | 13 |
-| O | 14 |
-| P | 15 |
-| Q | 16 |
-| R | 17 |
-| S | 18 |
-| T | 19 |
-| U | 20 |
-| ... | ... |
-
-Se pegarmos os caracteres correspondente aos indices, temos:
+Convertendo os índices:
 
 | Caractere | Índice |
 | :---: | :---: |
@@ -63,71 +47,98 @@ Se pegarmos os caracteres correspondente aos indices, temos:
 | J | 9 |
 | D | 3 |
 
-Resultado: ```QUJD```
+Resultado:
 
-# Se o tamanho da entrada não for múltiplo de 3?
-A divisão dos grupos de 3 bytes quebram e sobram bytes a serem codificados. Exemplo:
+```
+QUJD
+```
 
+# Quando o tamanho não é múltiplo de 3
+Se a entrada não for múltiplo de 3 bytes, o último bloco fica incompleto.
+
+Exemplo:
 | A | B | C | D | 
 | :---: | :---: | :---: | :---: |
 | 01000001 | 01000010 | 01000011 | 01000100 |
 
-Dividindo em blocos de 3 bytes:
-
-| A | B | C |
-| :---: | :---: | :---: |
-| 01000001 | 01000010 | 01000011 |
-
-Veja que sobrou o byte ```D```
+O bloco ```ABC``` é processado normalmente. O byte restante (```D```) precisa ser tratado.
 
 | D |
 | :---: |
 | 01000100 |
 
-Preenchemos os restantes dos bits com ```0s``` á direita até completar ```24 bits (3 bytes)```, ou seja, se sobrou ```1 byte (8 bits)``` precisamos de mais ```2 bytes (16 bits)```
+Para completar 24 bits, adicionamos zeros à direita:
 
-| D | ? | ? |
+| D | padding | padding |
 | :---: | :---: | :---: |
 | 01000100 | 00000000 | 00000000 |
 
-# Como calcular o tamanho final?
+Em seguida dividimos em 4 blocos de 6 bits
+
+| 17 | 0 | padding | padding |
+| :---: | :---: | :---: | :---: |
+| 010001 | 000000 | 000000 | 000000 |
+
+O primeiro grupo corresponde aos 6 primeiros bits do byte ```D```, sobrando 2 bits e esses 2 bits foram preenchidos com 4 bits à direita, criando o segundo grupo de 6 bits e os últimos 2 grupos não representam dados reais, apenas indicam que houve preenchimento (padding) para completar um bloco de 4 caracteres.
+
+Convertendo os índices:
+
+| Caractere | Índice |
+| :---: | :---: |
+| R | 17 |
+| A | 0 |
+| = | 0 |
+| = | 0 |
+
+Resultado:
+
+```
+QUJDRA==
+```
+
+# Cálculo do tamanho final
 Primeiro dividimos o tamanho total da entrada em blocos de 3:
 
 ```
-        Entrada: ABC
-Total de blocos: 3 / 3 = 1
+        Entrada = ABC
+Total de blocos = 3 / 3 = 1
 ```
 
 Tivemos o resultado de 1 bloco de ```24 bits```, a cada ```24 bits``` o algoritmo gera ```4 caracteres``` da tabela base64, então temos o seguinte calculo:
 
 ```
-      Entrada: ABC
-Tamanho final: 3 / 3 * 4 = 4
+      Entrada = ABC
+Tamanho final = 3 / 3 * 4 = 4
 ```
 
-Feito! O tamanho final é de ```4 bytes``` mas tem um porém, e se o tamanho de entrada não for ```múltiplo de 3```? Aí a divisão dos blocos quebram e temos que arredondar o tamanho final para ```múltiplo de 4```. Exemplo:
+O tamanho final é de ```4 bytes``` mas se o tamanho de entrada não for ```múltiplo de 3``` a divisão dos blocos quebram e temos que arredondar o tamanho para o próximo múltiplo de 4.
 
+Exemplo:
 ```
-      Entrada: ABCD
-Tamanho final: 4 / 3 * 4 = 5.33333333
-```
-
-O múltiplo de 4 mais próximo é o ```8```, faremos o arredondamento para cima do tamanho final quebrado ```5.33333333```
-
-```
-      Entrada: ABCD
-Tamanho final: ceil(4 / 3 * 4) = 6
+      Entrada = ABCD
+Tamanho final = 4 / 3 * 4 = 5.33333333
 ```
 
-OK! Mas como vou implementar esse algoritmo em c?
-Simples, deslocando bits e combinando-os com operações bitwise
+O múltiplo de 4 mais próximo é o ```8```, faremos o arredondamento para cima do tamanho final quebrado ```5.33333333```:
 
-# Deslocando bits
-As operações `>>` (right shift) e `<<` (left shift) movem bits para direita ou esquerda.. Exemplo:
+```
+      Entrada = ABCD
+Tamanho final = ceil(4 / 3) * 4 = 8
+```
 
-| Caractere | Binário | Operador | Operando | Resultado |
-| :---: | :---: | :---: | :---: | :---: |
-| A | 01000001 | >> | 2 | 00010000 |
+# Implementação em C (bitwise)
+A codificação pode ser feita utilizando operações bitwise (```>>```, ```<<```, ```&```, ```|```) para extrair e combinar bits.
+
+## Deslocando bits
+
+As operações:
+- ```>>``` (right shift): desloca bits para a direita
+- ```<<``` (left shift): desloca bits para a esquerda
+
+Exemplo:
+| Caractere | Binário | Operação | Resultado |
+| :---: | :---: | :---: | :---: |
+| A | 01000001 | A >>  2 | 00010000 |
 
 Dois bits foram movidos para a direita, descartando os 2 bits menos significativos. Dois bits 0 foram inseridos à esquerda. O resultado continua sendo um byte de 8 bits, mas agora apenas os 6 bits mais significativos originais foram mantidos.
 
@@ -169,7 +180,7 @@ Seis bits descartados do byte ```C```
 000011 (novo indice da tabela base64)
 ```
 
-# Obtendo bits específicos
+## Obtendo bits específicos
 Para obter bits especificos do byte ```A``` por exemplo, precisamos utilizar a **operação bitwise AND (&)** que fará uma comparação bit a bit de um número com outro, o bit resultante é ```1``` se ambos os bits correspondentes forem ```1```, caso contrário, é ```0```. Exemplo:
 
 ```
@@ -186,7 +197,7 @@ C & 00001111
     00000011
 ```
 
-# Concatenando bits
+## Concatenando bits
 Para concatenar os bits vamos utilizar **operação bitwise OR (|)** combinado com **deslocamento de bits** abordado [anteriormente](#deslocando-bits)
 
 | A | B | C |
@@ -198,7 +209,6 @@ Para concatenar os bits vamos utilizar **operação bitwise OR (|)** combinado c
 | 010000 | 010100 | 001001 | 000011 |
 
 ### 1° grupo
-
 Basta deslocar dois bits para direita ```A >> 2``` resultado ```010000```
 
 ### 2° grupo
@@ -241,4 +251,5 @@ Seis ultimos bits do byte ```C```
 C & 00111111 = 000011
 ```
 
-Essa é a lógica que utilizei para codificar dados para base64 em C
+# Conclusão
+O Base64 é um algoritmo simples, mas poderoso, que permite representar dados binários em formato textual. Sua implementação exige compreensão de manipulação de bits, especialmente operações de deslocamento e máscaras.
