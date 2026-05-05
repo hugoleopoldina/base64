@@ -84,7 +84,11 @@ Veja que sobrou o byte ```D```
 | :---: |
 | 01000100 |
 
+Preenchemos os restantes dos bits com ```0s``` á direita até completar ```24 bits (3 bytes)```, ou seja, se sobrou ```1 byte (8 bits)``` precisamos de mais ```2 bytes (16 bits)```
 
+| D | ? | ? |
+| :---: | :---: | :---: |
+| 01000100 | 00000000 | 00000000 |
 
 # Como calcular o tamanho final?
 Primeiro dividimos o tamanho total da entrada em blocos de 3:
