@@ -65,6 +65,27 @@ Se pegarmos os caracteres correspondente aos indices, temos:
 
 Resultado: ```QUJD```
 
+# Se o tamanho da entrada não for múltiplo de 3?
+A divisão dos grupos de 3 bytes quebram e sobram bytes a serem codificados. Exemplo:
+
+| A | B | C | D | 
+| :---: | :---: | :---: | :---: |
+| 01000001 | 01000010 | 01000011 | 01000100 |
+
+Dividindo em blocos de 3 bytes:
+
+| A | B | C |
+| :---: | :---: | :---: |
+| 01000001 | 01000010 | 01000011 |
+
+Veja que sobrou o byte ```D```
+
+| D |
+| :---: |
+| 01000100 |
+
+
+
 # Como calcular o tamanho final?
 Primeiro dividimos o tamanho total da entrada em blocos de 3:
 
