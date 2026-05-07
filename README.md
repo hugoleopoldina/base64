@@ -251,5 +251,135 @@ Seis ultimos bits do byte ```C```
 C & 00111111 = 000011
 ```
 
+# Decodificação
+Da mesma forma que a cooficação transforma 3 bytes em 4 caracteres, a decodificação vai tranformar 4 caracteres em 3 bytes, agrupando 4 grupos de 6 bits em 3 grupos de 8 bits
+
+Exemplo:
+| 16 | 20 | 9 | 3 |
+| :---: | :---: | :---: | :---: |
+| Q | U | J | D |
+| 010000 | 010100 | 001001 | 000011 |
+
+Agrupando em grupos de 8 bits:
+
+| A | B | C |
+| :---: | :---: | :---: |
+| 01000001 | 01000010 | 01000011 |
+
+## Transformação passo a passo
+### 1º grupo
+Seis bits do 1º grupo + 2 primeiros bits do 2º grupo:
+
+```
+1º grupo: 010000
+2º grupo: 010100
+```
+
+Seis bits do 1º grupo:
+
+```
+010000
+```
+
+Abrir espaço para mais 2 bits:
+
+```
+010000 << 2 = 01000000
+```
+
+Dois primeiros bits do 2º grupo:
+
+```
+010100 >> 4 = 01
+```
+
+Concatenar os resultados:
+
+```
+01000000 | 01 = 01000001
+```
+
+Cálculo final:
+
+```
+(010000 << 2) | (010100 >> 4)
+```
+
+### 2º grupo
+Quatro últimos bits do 2º grupo + 4 primeiros bits do 3º grupo:
+
+```
+2º grupo: 010100
+3º grupo: 001001
+```
+
+Quatro ultimos bits do 2º grupo:
+
+```
+010100 & 001111 = 0100
+```
+
+Abrir espaço para mais 4 bits
+
+```
+0100 << 4 = 01000000
+```
+
+Quatro primeiros bits do 3º grupo:
+
+```
+001001 >> 2 = 0010
+```
+
+Concatenar os resultados:
+
+```
+01000000 | 0010 = 01000010
+```
+
+Cálculo final:
+
+```
+((010100 & 001111) << 2) | (001001 >> 2) = 01000010
+```
+
+### 3º grupo
+Dois últimos bits do 3º grupo + 6 bits do 4º grupo:
+
+```
+3º grupo: 001001
+4º grupo: 000011
+```
+
+Dois últimos bits do 3º grupo:
+
+```
+001001 & 000011 = 01
+```
+
+Abrir espaço para mais 6 bits:
+
+```
+01 << 6 = 01000000
+```
+
+Seis bits do 4º grupo:
+
+```
+000011
+```
+
+Concatenar os resultados:
+
+```
+01000000 | 000011 = 01000011
+```
+
+Cálculo final:
+
+```
+((001001 & 000011) << 6) | 000011 = 01000011
+```
+
 # Conclusão
 O Base64 é um algoritmo simples, mas poderoso, que permite representar dados binários em formato textual. Sua implementação exige compreensão de manipulação de bits, especialmente operações de deslocamento e máscaras.
