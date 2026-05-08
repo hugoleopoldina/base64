@@ -1,5 +1,6 @@
 # Tópicos
 + [Introdução](#base64-algorithm)
++ [Exemplo](#exemplo)
 + [Codificação](#codificação)
 + [Decodificação](#decodificação)
 + [Implementação em C](#implementação-em-c)
@@ -7,6 +8,59 @@
 
 # base64-algorithm
 Este projeto foi criado para estudar o funcionamento do algoritmo Base64 e implementar funções de codificação e decodificação em linguagem C. O objetivo é entender como dados podem ser transformados para transmissão em redes ou armazenamento em sistemas que aceitam apenas caracteres ASCII.
+
+# Exemplo
+Para codificar dados usamos a função ```base64_encode```:
+
+```c
+#include "base64.h"
+
+int main(void) {
+    // dados a serem codificados
+    unsigned char* data = "Hello, World!";
+
+    // codificar
+    char* encoded = base64_encode(data, strlen(data));
+
+    // imprimir o resultado
+    printf("Dados codificados: %s\n", encoded);
+
+    // liberar resultado
+    free(encoded);
+    return 0;
+}
+```
+
+Saída do terminal:
+
+```
+Dados codificados: SGVsbG8sIFdvcmxkIQ==
+```
+
+Para decodificar dados Base64 usamos a função ```base64_decode```:
+
+```c
+int main(void) {
+    // dados a serem decodificados
+    unsigned char* data = "SGVsbG8sIFdvcmxkIQ==";
+
+    // decodificar
+    char* decoded = base64_decode(data, NULL);
+
+    // imprimir o resultado
+    printf("Dados decodificados: %s\n", decoded);
+
+    // liberar resultado
+    free(decoded);
+    return 0;
+}
+```
+
+Saída do terminal:
+
+```
+Dados decodificados: Hello, World!
+```
 
 # Codificação
 O Base64 converte dados binários (textos, imagens ou arquivos) em uma sequência de caracteres ASCII legíveis:
