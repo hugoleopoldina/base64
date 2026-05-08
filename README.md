@@ -1,7 +1,14 @@
+# Tópicos
++ [Introdução](#base64-algorithm)
++ [Codificação](#codificação)
++ [Decodificação](#decodificação)
++ [Implementação em C](#implementação-em-c)
++ [Conclusão](#conclusão)
+
 # base64-algorithm
 Este projeto foi criado para estudar o funcionamento do algoritmo Base64 e implementar funções de codificação e decodificação em linguagem C. O objetivo é entender como dados podem ser transformados para transmissão em redes ou armazenamento em sistemas que aceitam apenas caracteres ASCII.
 
-# Como funciona
+# Codificação
 O Base64 converte dados binários (textos, imagens ou arquivos) em uma sequência de caracteres ASCII legíveis:
 
 ```
@@ -126,7 +133,7 @@ O múltiplo de 4 mais próximo é o ```8```, faremos o arredondamento para cima 
 Tamanho final = ceil(4 / 3) * 4 = 8
 ```
 
-# Implementação em C (bitwise)
+# Implementação em C
 A codificação pode ser feita utilizando operações bitwise (```>>```, ```<<```, ```&```, ```|```) para extrair e combinar bits.
 
 ## Deslocando bits
@@ -180,7 +187,7 @@ Seis bits descartados do byte ```C```
 000011 (novo indice da tabela base64)
 ```
 
-## Obtendo bits específicos
+## Extraindo bits específicos
 Para obter bits especificos do byte ```A``` por exemplo, precisamos utilizar a **operação bitwise AND (&)** que fará uma comparação bit a bit de um número com outro, o bit resultante é ```1``` se ambos os bits correspondentes forem ```1```, caso contrário, é ```0```. Exemplo:
 
 ```
