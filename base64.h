@@ -19,7 +19,7 @@
 /*
 * @brief Codifica bloco de bytes em carcateres ASCII
 * @param bytes bloco a ser codificado
-* @param length tamanho do bloco
+* @param size tamanho do bloco
 * @return string ASCII codificado
 * @warning o retorno deve ser liberado usando free()
 */
