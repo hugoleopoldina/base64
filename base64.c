@@ -87,12 +87,25 @@ char* base64_encode(unsigned char* bytes, size_t size) {
 }
 
 unsigned char* base64_decode(char* encoded, size_t* out_size) {
-    // tamanho final
+    // calcular tamanho sem preenchimento
     int enc_len = strlen(encoded),
-        total = (enc_len / 4) * 3;
+        padding = 0,
+        total   = 0;
+
+    if (encoded[enc_len - 1] == '=') padding++;
+    if (encoded[enc_len - 2] == '=') padding++;
+
+    total = ((enc_len / 4) * 3) - padding;
 
     // resultado
-    unsigned char* result = (unsigned char*)malloc(total + 1);
+    unsigned char* result = (unsigned char*)malloc(total);
+
+    if (!result) {
+        return NULL;
+    }
+
+    // zerar bloco result
+    memset(result, 0, total);
 
     // operar 4 numero de 8 bits que corresponde a um indice da tabela
     uint8_t stream[4] = { 0 };
@@ -100,23 +113,21 @@ unsigned char* base64_decode(char* encoded, size_t* out_size) {
     int stream_index = 0, // para percorrer stream
         result_index = 0; // para percorrer result
 
-    if (!result) {
-        return NULL;
-    }
-
-    // zerar bloco result
-    memset(result, 0, total + 1);
-
     // percorrer cada caractere codificado
     for (int i = 0; i < enc_len; i++) {
         char target = encoded[i];
+
+        if (target == '\n' || target == '\r')
+            continue;
 
         uint8_t index = 0;
 
         // até que encontre o indice correspondente
         // index 0 se o caractere for de padding
         if (target != '=') {
-            for (; target != base64_table[index]; index++);
+            while (base64_table[index] != target) {
+                index++;
+            }
         }
 
         // salvar o indice que corresponde ao caractere codificado em stream
@@ -130,21 +141,24 @@ unsigned char* base64_decode(char* encoded, size_t* out_size) {
 
             // 2º grupo de 8 bits
             // 4 ultimos bits do 2º indice + 4 primeiros bits do 3º indice
-            result[result_index++] = ((stream[1] & 0xF) << 4) | (stream[2] >> 2);
+            if (result_index < total) // verificar se padding
+                result[result_index++] = ((stream[1] & 0xF) << 4) | (stream[2] >> 2);
+            
 
             // 3º grupo de 8 bits
             // 2 ultimos bits do 3º indice + 6 bits do 4º indice
-            result[result_index++] = ((stream[2] & 0x3) << 6) | stream[3];
-
-            // escrever tamanho total se out_size definido
-            if (out_size)
-                (*out_size) += 3;
+            if (result_index < total) // verificar se padding
+                result[result_index++] = ((stream[2] & 0x3) << 6) | stream[3];
 
             // zerar
             memset(stream, 0, 4);
             stream_index = 0;
         }
     }
+
+    // escrever tamanho total se out_size definido
+    if (out_size)
+        *out_size = total;
 
     return result;
 }
