@@ -10,7 +10,7 @@
 #include "base64.h"
 
 // tabela ASCII
-static const char base64_table[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/+";
+static const char base64_table[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 char* base64_encode(unsigned char* bytes, size_t size) {
     // tamanho final truncado
