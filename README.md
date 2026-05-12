@@ -6,7 +6,7 @@
 + [Implementação em C](#implementação-em-c)
 + [Conclusão](#conclusão)
 
-# base64-algorithm
+# base64
 Este projeto foi criado para estudar o funcionamento do algoritmo Base64 e implementar funções de codificação e decodificação em linguagem C. O objetivo é entender como dados podem ser transformados para transmissão em redes ou armazenamento em sistemas que aceitam apenas caracteres ASCII.
 
 # Exemplo
