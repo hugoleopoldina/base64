@@ -17,8 +17,8 @@ char* base64_encode(unsigned char* bytes, size_t size) {
     size_t total = (size_t)trunc(ceil((float)size / 3) * 4);
 
     // resultado
-    char *result = (char*)malloc(total + 1),
-          stream[3] = {0}; // operar cada 3 bytes
+    char *result = (char*)malloc(total + 1);
+    unsigned char stream[3] = {0}; // operar cada 3 bytes
                                                                                                                                                                                                                
     if (!result) {
         return NULL;
